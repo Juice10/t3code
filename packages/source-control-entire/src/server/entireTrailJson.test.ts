@@ -174,7 +174,7 @@ describe("entireTrailJson", () => {
       ),
       [],
     );
-    for (const status of ["failed", "pending", "passed"]) {
+    for (const status of ["failed", "error", "pending", "passed"]) {
       const gated = decodeDetail({
         ...Fixtures.detail,
         mergeability: {
@@ -187,7 +187,11 @@ describe("entireTrailJson", () => {
         },
       });
       const expected =
-        status === "failed" ? "failing" : status === "passed" ? "passing" : "pending";
+        status === "failed" || status === "error"
+          ? "failing"
+          : status === "passed"
+            ? "passing"
+            : "pending";
       const gatedChecks = Json.toChecks(gated, "gh/acme/web");
       assert.strictEqual(Json.toChecksState(gatedChecks), expected);
       assert.strictEqual(Json.toSummaryChecksState(gated, "gh/acme/web"), expected);
